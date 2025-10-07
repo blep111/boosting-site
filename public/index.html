@@ -1,97 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FB Auto Reaction Booster</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #000428, #004e92);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      width: 400px;
-      padding: 25px;
-      background: rgba(0,0,0,0.7);
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 0 20px #00b7ff;
-    }
-    input, select, button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      font-size: 1rem;
-    }
-    input, select {
-      background: #111;
-      color: #00b7ff;
-    }
-    button {
-      background: #00b7ff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover { background: #0095cc; }
-    #result { margin-top: 15px; color: #0ff; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Facebook Cookie Reaction Booster</title>
+<style>
+body { font-family: Poppins; background: #000428; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+.container { width:400px; padding:25px; background:rgba(0,0,0,0.7); border-radius:15px; text-align:center; box-shadow:0 0 20px #00b7ff; }
+input, select, button { width:100%; margin:10px 0; padding:10px; border-radius:8px; border:none; font-size:1rem; }
+input, select { background:#111; color:#00b7ff; }
+button { background:#00b7ff; font-weight:bold; cursor:pointer; transition:0.3s; }
+button:hover { background:#0095cc; }
+#result { margin-top:15px; color:#0ff; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h2>Facebook Auto Reaction Booster</h2>
-    <input id="cookie" placeholder="Enter your Facebook Cookie" />
-    <input id="postId" placeholder="Enter Post ID" />
-    <select id="reaction">
-      <option value="1">LIKE</option>
-      <option value="2">LOVE</option>
-      <option value="3">HAHA</option>
-      <option value="4">WOW</option>
-      <option value="7">SAD</option>
-      <option value="8">ANGRY</option>
-    </select>
-    <button id="boostBtn">Send Reaction</button>
-    <div id="result"></div>
-  </div>
+<div class="container">
+<h2>Facebook Cookie Reaction Booster</h2>
+<input id="cookie" placeholder="Enter your Facebook cookie (c_user & xs)" />
+<input id="postId" placeholder="Enter Post ID" />
+<select id="reaction">
+<option value="LIKE">LIKE</option>
+<option value="LOVE">LOVE</option>
+<option value="HAHA">HAHA</option>
+<option value="WOW">WOW</option>
+<option value="SAD">SAD</option>
+<option value="ANGRY">ANGRY</option>
+</select>
+<button id="boostBtn">Send Reaction</button>
+<div id="result"></div>
+</div>
 
-  <script>
-    document.getElementById("boostBtn").addEventListener("click", async () => {
-      const cookie = document.getElementById("cookie").value.trim();
-      const postId = document.getElementById("postId").value.trim();
-      const reaction = document.getElementById("reaction").value;
-      const result = document.getElementById("result");
+<script>
+document.getElementById("boostBtn").addEventListener("click", async () => {
+  const cookie = document.getElementById("cookie").value.trim();
+  const postId = document.getElementById("postId").value.trim();
+  const reaction = document.getElementById("reaction").value;
+  const result = document.getElementById("result");
 
-      if (!cookie || !postId) {
-        result.innerText = "⚠️ Fill all fields!";
-        return;
-      }
+  if(!cookie || !postId){ result.innerText="⚠️ Fill all fields!"; return; }
+  result.innerText="⏳ Sending reaction...";
 
-      result.innerText = "⏳ Sending reaction...";
-      try {
-        const res = await fetch("/api/react", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cookie, postId, reaction })
-        });
-        const data = await res.json();
-        if (data.success) {
-          result.innerText = "✅ Reaction sent successfully!";
-        } else {
-          result.innerText = "❌ " + data.message;
-        }
-      } catch (err) {
-        result.innerText = "⚠️ Error sending reaction.";
-      }
+  try {
+    const res = await fetch("/api/react", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ cookie, postId, reaction })
     });
-  </script>
+    const data = await res.json();
+    result.innerText = data.success ? "✅ Reaction sent!" : "❌ " + data.message;
+  } catch(err){
+    result.innerText="⚠️ Error sending reaction.";
+  }
+});
+</script>
 </body>
 </html>

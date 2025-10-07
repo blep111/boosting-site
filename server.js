@@ -10,34 +10,40 @@ app.use(express.urlencoded({ extended: true }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static UI
+// Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
-// Reaction API
+// Facebook reaction API using cookies
 app.post("/api/react", async (req, res) => {
-  const { accessToken, postId, reaction } = req.body;
+  const { cookie, postId, reaction } = req.body;
 
-  if (!accessToken || !postId || !reaction) {
-    return res.json({ success: false, message: "Missing parameters." });
+  if (!cookie || !postId || !reaction) {
+    return res.json({ success: false, message: "Missing fields." });
   }
 
   try {
-    const url = `https://graph.facebook.com/v19.0/${postId}/reactions?type=${reaction}&access_token=${accessToken}`;
-    const response = await fetch(url, { method: "POST" });
-    const result = await response.json();
+    const url = `https://mbasic.facebook.com/ufi/reaction/?reaction_type=${reaction}&ft_ent_identifier=${postId}`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "cookie": cookie,
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "content-type": "application/x-www-form-urlencoded"
+      }
+    });
 
-    if (!result.error) {
-      res.json({ success: true, message: "Reaction added successfully!" });
+    if (response.ok) {
+      res.json({ success: true, message: "Reaction sent successfully!" });
     } else {
-      res.json({ success: false, message: result.error.message });
+      res.json({ success: false, message: "Failed to send reaction." });
     }
-  } catch (error) {
-    res.json({ success: false, message: error.message });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
   }
 });
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
+  console.log(`🚀 Facebook Cookie Booster running at http://localhost:${PORT}`)
 );

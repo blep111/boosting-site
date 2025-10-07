@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facebook Auto Reaction Booster</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #001f3f, #000);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    h1 {
+      color: #00b7ff;
+      text-shadow: 0 0 15px #00b7ff;
+      font-size: 2rem;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00b7ff;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00b7ff;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-family: 'Poppins';
+      font-size: 1rem;
+    }
+    input, select {
+      background: #111;
+      color: #00b7ff;
+      border: 1px solid #00b7ff;
+    }
+    button {
+      background: #00b7ff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: #0095cc;
+      transform: scale(1.05);
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff;
+    }
+    footer {
+      margin-top: 15px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚡ Facebook Auto Reaction Booster ⚡</h1>
+  <div class="container">
+    <input id="accessToken" placeholder="Enter your Facebook Access Token" />
+    <input id="postId" placeholder="Enter Facebook Post ID" />
+    <select id="reaction">
+      <option value="LIKE">👍 LIKE</option>
+      <option value="LOVE">❤️ LOVE</option>
+      <option value="WOW">😮 WOW</option>
+      <option value="HAHA">😂 HAHA</option>
+      <option value="SAD">😢 SAD</option>
+      <option value="ANGRY">😡 ANGRY</option>
+      <option value="CARE">🤗 CARE</option>
+    </select>
+    <button id="boostBtn">BOOST REACTIONS</button>
+    <div id="result"></div>
+  </div>
+  <footer>Developed by <b>Vern Matrix UI</b></footer>
+
+  <script>
+    document.getElementById("boostBtn").addEventListener("click", async () => {
+      const accessToken = document.getElementById("accessToken").value.trim();
+      const postId = document.getElementById("postId").value.trim();
+      const reaction = document.getElementById("reaction").value;
+
+      if (!accessToken || !postId) {
+        document.getElementById("result").innerHTML = "⚠️ Please fill all fields!";
+        return;
+      }
+
+      document.getElementById("result").innerHTML = "⏳ Boosting reaction...";
+      try {
+        const res = await fetch("/api/react", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessToken, postId, reaction })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("result").innerHTML = "✅ Reaction boosted successfully!";
+        } else {
+          document.getElementById("result").innerHTML = "❌ " + data.message;
+        }
+      } catch (err) {
+        document.getElementById("result").innerHTML = "⚠️ Error connecting to API.";
+      }
+    });
+  </script>
+</body>
+</html>
